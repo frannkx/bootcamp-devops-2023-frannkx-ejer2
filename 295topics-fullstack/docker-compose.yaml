@@ -1,23 +1,69 @@
-version: '3.1'
+version: '3.8'
 
 services:
+  
+  front:
+    image: frannkx/295topics-frontend:1.0.0
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - front-net
+      - back-net
+    environment:
+      - API_URI=http://topics-api:5000/api/topics
+    depends_on:
+      - back
+
+  back:
+    image: frannkx/295topics-backend:1.0.0
+    restart: always
+    ports:
+      - 5000:5000
+    networks:
+      - back-net
+    environment:
+      - DATABASE_URL= X
+      - DATABASE_NAME= X
+      - HOST= X
+      - PORT= 27017
+    depends_on:
+      - mongo
 
   mongo:
-    image: mongo
+    image: mongo:7.0.4
     restart: always
+    networks:
+      - back-net
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: db/mongo-init.js
       #MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongo-root
       #MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo-root
+    volumes:
+      - mongo-data:/data/db
 
   mongo-express:
-      image: mongo-express
-      restart: always
-      ports:
-        - 8081:8081
-      environment:
-        ME_CONFIG_MONGODB_ADMINUSERNAME: root
-        ME_CONFIG_MONGODB_ADMINPASSWORD: example
-        ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    image: mongo-express:1.0.0-18-alpine3.18
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    depends_on:
+      - mongo
+    networks:
+     - back-net
+     - front-net
 
+volumes:
+  mongo-data:
+
+networks:
+  front-net:
+    driver: bridge
+  back-net:
+    driver: bridge
