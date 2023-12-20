@@ -38,13 +38,13 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: db/mongo-init.js
       #MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongo-root
       #MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo-root
     volumes:
       - mongo-data:/data/db
+      - $PWD/db:/docker-entrypoint-initdb.d
 
-  mongo-express:
+  me:
     image: mongo-express:1.0.0-18-alpine3.18
     restart: always
     ports:
@@ -57,7 +57,6 @@ services:
       - mongo
     networks:
      - back-net
-     - front-net
 
 volumes:
   mongo-data:
