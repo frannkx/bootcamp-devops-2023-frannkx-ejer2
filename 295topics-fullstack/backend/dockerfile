@@ -1,0 +1,19 @@
+FROM node:12-alpine
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run 
+EXPOSE 5000
+CMD ["npm","run", "start"]
+
+#FROM node:12-alpine
+#WORKDIR /app
+#COPY package.json server.js
+# Install dependencies
+#RUN npm install
+# Copy the current directory contents into the container at /app
+#COPY . /app
+# Compile TypeScript
+#RUN npm run build
+#EXPOSE 5000
+#CMD ["npm", "run" "start"]
